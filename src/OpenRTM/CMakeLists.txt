@@ -1,4 +1,5 @@
-option(BUILD_OPENRTM_PLUGIN "Building OpenRTMPlugin" OFF)
+# option(BUILD_OPENRTM_PLUGIN "Building OpenRTMPlugin" OFF)
+option(BUILD_OPENRTM_PLUGIN "Building OpenRTMPlugin" ON)
 if(NOT BUILD_OPENRTM_PLUGIN)
   return()
 elseif(NOT (ENABLE_CORBA AND BUILD_CORBA_PLUGIN))
