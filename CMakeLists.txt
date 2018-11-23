@@ -377,7 +377,9 @@ else()
   option(ENABLE_PYTHON "Enable Python" ON)
 endif()
 
-option(USE_PYTHON3 "Use Python version 3 instead of version 2" ON)
+# option(USE_PYTHON3 "Use Python version 3 instead of version 2" ON)
+option(USE_PYTHON3 "Use Python version 3 instead of version 2" OFF)
+
 # for Config.h
 if(USE_PYTHON3)
   set(CNOID_USE_PYTHON2 OFF)
@@ -570,7 +572,9 @@ if(ENABLE_ASSIMP)
 endif()
 
 # CORBA, omniORB
-option(ENABLE_CORBA "Enable CORBA related modules / plugins" OFF)
+# option(ENABLE_CORBA "Enable CORBA related modules / plugins" OFF)
+option(ENABLE_CORBA "Enable CORBA related modules / plugins" ON)
+option(BUILD_CORBA_PLUGIN "Build CORBA Plugin" ON)
 
 if(ENABLE_CORBA)
   # Note that the OMNIORB_XXX varialbes cannot be used because
@@ -663,7 +667,8 @@ endif()
 install(FILES NEWS DESTINATION ${CHOREONOID_DOC_SUBDIR})
 install(FILES LICENSE DESTINATION ${CHOREONOID_DOC_SUBDIR})
 
-option(BUILD_DOCUMENTS "Build the API reference manual" OFF)
+# option(BUILD_DOCUMENTS "Build the API reference manual" OFF)
+option(BUILD_DOCUMENTS "Build the API reference manual" ON)
 if(BUILD_DOCUMENTS)
   add_subdirectory(doc)
 endif()
