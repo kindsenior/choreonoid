@@ -312,7 +312,8 @@ else()
   option(ENABLE_PYTHON "Enable Python" ON)
 endif()
 
-option(USE_PYBIND11 "Use the pybind11 library to make python bindings" ON)
+# option(USE_PYBIND11 "Use the pybind11 library to make python bindings" ON)
+option(USE_PYBIND11 "Use the pybind11 library to make python bindings" OFF)
 set(PYBIND11_DIR ${PROJECT_SOURCE_DIR}/thirdparty/pybind11 CACHE PATH "The directory of the pybind11 library")
 if(USE_PYBIND11)
   set(USE_BOOST_PYTHON OFF)
@@ -322,7 +323,8 @@ endif()
 set(CNOID_USE_PYBIND11 ${USE_PYBIND11})
 set(CNOID_USE_BOOST_PYTHON ${USE_BOOST_PYTHON})
 
-option(USE_PYTHON3 "Use Python version 3 instead of version 2" ON)
+# option(USE_PYTHON3 "Use Python version 3 instead of version 2" ON)
+option(USE_PYTHON3 "Use Python version 3 instead of version 2" OFF)
 
 # for Config.h
 if(USE_PYTHON3)
@@ -643,7 +645,9 @@ if(MSVC)
 endif()
 
 # CORBA, omniORB
-option(ENABLE_CORBA "Enable CORBA related modules / plugins" OFF)
+# option(ENABLE_CORBA "Enable CORBA related modules / plugins" OFF)
+option(ENABLE_CORBA "Enable CORBA related modules / plugins" ON)
+option(BUILD_CORBA_PLUGIN "Build CORBA Plugin" ON)
 
 if(ENABLE_CORBA)
 
@@ -919,14 +923,15 @@ if(BUILD_OPENRTM_PLUGIN)
   set(IDL_INCLUDE_DIRS ${IDL_INCLUDE_DIRS} ${OPENRTM_INCLUDE_DIRS})
 
   # Check version
-  if(OPENRTM_VERSION STREQUAL "1.1.2")
+  if(OPENRTM_VERSION STREQUAL "1.1.2" OR OPENRTM_VERSION STREQUAL "1.1.0")
     list(APPEND OPENRTM_DEFINITIONS -DOPENRTM_VERSION11)
   elseif(OPENRTM_VERSION STREQUAL "1.2.0")
     list(APPEND OPENRTM_DEFINITIONS -DOPENRTM_VERSION12)
   else()
     message(FATAL_ERROR "OpenRTM version is INVALID.")
   endif()
-  option(USE_BUILTIN_CAMERA_IMAGE_IDL "Enable this option when you run hrpsys-base on Choreonoid" OFF)
+  # option(USE_BUILTIN_CAMERA_IMAGE_IDL "Enable this option when you run hrpsys-base on Choreonoid" OFF)
+  option(USE_BUILTIN_CAMERA_IMAGE_IDL "Enable this option when you run hrpsys-base on Choreonoid" ON)
   if(USE_BUILTIN_CAMERA_IMAGE_IDL)
     list(APPEND OPENRTM_DEFINITIONS -DUSE_BUILTIN_CAMERA_IMAGE_IDL)
   else()
@@ -991,7 +996,8 @@ endif()
 install(FILES NEWS DESTINATION ${CNOID_DOC_SUBDIR})
 install(FILES LICENSE DESTINATION ${CNOID_DOC_SUBDIR})
 
-option(BUILD_DOCUMENTS "Build the API reference manual" OFF)
+# option(BUILD_DOCUMENTS "Build the API reference manual" OFF)
+option(BUILD_DOCUMENTS "Build the API reference manual" ON)
 if(BUILD_DOCUMENTS)
   add_subdirectory(doc)
 endif()
