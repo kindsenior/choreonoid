@@ -101,6 +101,8 @@ public:
     //! deprecated
     bool calcInverseKinematics(
         const Vector3& base_p, const Matrix3& base_R, const Vector3& end_p, const Matrix3& end_R);
+    // added
+    Eigen::MatrixXd calcJacobian() const;
     //! deprecated
     void calcJacobian(Eigen::MatrixXd& out_J) const;
     //! deprecated
