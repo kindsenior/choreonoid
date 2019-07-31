@@ -191,6 +191,12 @@ int JointPath::indexOf(const Link* link) const
     return -1;
 }
 
+Eigen::MatrixXd  JointPath::calcJacobian() const
+{
+    Eigen::MatrixXd out_J;
+    calcJacobian(out_J);
+    return out_J;
+}
 
 void JointPath::onJointPathUpdated()
 {
