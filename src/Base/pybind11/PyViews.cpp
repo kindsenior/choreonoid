@@ -105,6 +105,7 @@ void exportPyViews(py::module m)
         .def("setHeight", &SceneWidget::setHeight)
         .def("setNear", &SceneWidget::setNear)
         .def("setFar", &SceneWidget::setFar)
+        .def("saveImage", &SceneWidget::saveImage)
 
         // deprecated
         .def("getSigStateChanged", &SceneWidget::sigStateChanged)
