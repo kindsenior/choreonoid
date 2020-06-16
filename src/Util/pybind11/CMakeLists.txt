@@ -19,6 +19,7 @@ choreonoid_add_python_module(PyUtil
   PySceneGraph.cpp
   PyGeometryTypes.cpp
   PyTask.cpp
+  PyCollisionDetector.cpp
   )
 
 target_link_libraries(PyUtil CnoidUtil CnoidPyUtil)

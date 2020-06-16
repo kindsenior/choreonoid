@@ -5,6 +5,7 @@
 #include "../BodyItem.h"
 #include <cnoid/BodyState>
 #include <cnoid/PyBase>
+#include <pybind11/stl.h>
 
 using namespace std;
 using namespace cnoid;
@@ -61,6 +62,8 @@ void exportBodyItem(py::module m)
         .def("enableSelfCollisionDetection", &BodyItem::enableSelfCollisionDetection)
         .def("isSelfCollisionDetectionEnabled", &BodyItem::isSelfCollisionDetectionEnabled)
         .def("clearCollisions", &BodyItem::clearCollisions)
+        .def("collisionLinkBitSet", (std::vector<bool>&(BodyItem::*)())&BodyItem::collisionLinkBitSet, py::return_value_policy::reference)
+        .def("collisionsOfLink", (std::vector<CollisionLinkPairPtr>&(BodyItem::*)(int))&BodyItem::collisionsOfLink, py::return_value_policy::reference)
         .def_property_readonly("centerOfMass", &BodyItem::centerOfMass)
         .def("doLegIkToMoveCm", &BodyItem::doLegIkToMoveCm)
         .def_property_readonly("zmp", &BodyItem::zmp)

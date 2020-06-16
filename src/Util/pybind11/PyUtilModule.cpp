@@ -20,6 +20,7 @@ void exportPySeqTypes(py::module& m);
 void exportPySceneGraph(py::module& m);
 void exportPyGeometryTypes(py::module& m);
 void exportPyTaskTypes(py::module& m);
+void exportPyCollisionDetector(py::module& m);
 
 }
 
@@ -36,6 +37,7 @@ PYBIND11_MODULE(Util, m)
     exportPySceneGraph(m);
     exportPyGeometryTypes(m);
     exportPyTaskTypes(m);
+    exportPyCollisionDetector(m);
 
     m.attr("shareDirectory") = shareDirectory();
     m.attr("executablePath") = executablePath();

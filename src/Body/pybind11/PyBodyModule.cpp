@@ -5,10 +5,12 @@
 #include "../Body.h"
 #include "../BodyLoader.h"
 #include "../BodyMotion.h"
+#include "../CollisionLinkPair.h"
 #include "../InverseKinematics.h"
 #include "../JointPath.h"
 #include <cnoid/PyEigenTypes>
 #include <pybind11/operators.h>
+#include <pybind11/stl.h>
 
 using namespace std;
 using namespace cnoid;
@@ -44,6 +46,11 @@ PYBIND11_MODULE(Body, m)
         .def(py::init<>())
         .def("load", (Body*(BodyLoader::*)(const string&))&BodyLoader::load)
         .def("lastActualBodyLoader", &BodyLoader::lastActualBodyLoader)
+        ;
+
+    py::class_<CollisionLinkPair, CollisionLinkPairPtr>(m, "CollisionLinkPair")
+        .def("isSelfCollision", &CollisionLinkPair::isSelfCollision)
+        .def_readwrite("collisions", &CollisionLinkPair::collisions)
         ;
 
     py::class_<JointPath, shared_ptr<JointPath>>(m, "JointPath")
