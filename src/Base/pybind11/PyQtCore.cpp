@@ -3,6 +3,7 @@
 */
 
 #include "PyQString.h"
+#include <QEventLoop>
 #include <QObject>
 #include <QTimer>
 #include <pybind11/pybind11.h>
@@ -12,6 +13,24 @@ namespace py = pybind11;
 PYBIND11_MODULE(QtCore, m)
 {
     m.doc() = "Choreonoid QtCore module";
+
+    py::class_<QEventLoop>qEventLoop(m,"QEventLoop");
+    qEventLoop.def(py::init<>())
+        // .def(py::init<QObject*>(), py::arg("parent")=(QObject*)nullptr )
+        // .def(py::init<QObject*>(), py::arg("parent")=(QObject*)(0) )
+        // .def("processEvents", (bool (QEventLoop::*)(QEventLoop::ProcessEventsFlags)) &QEventLoop::processEvents, py::arg("flags")=QEventLoop::AllEvents)
+        .def("processEvents", [](QEventLoop& self){ return self.processEvents(); })
+        ;
+
+    // py::enum_<QEventLoop::ProcessEventsFlag>(qEventLoop, "ProcessEventsFlag")
+    //     .value("AllEvents", QEventLoop::ProcessEventsFlag::AllEvents)
+    //     .value("ExcludeUserInputEvents", QEventLoop::ProcessEventsFlag::ExcludeUserInputEvents)
+    //     .value("ExcludeSocketNotifiers", QEventLoop::ProcessEventsFlag::ExcludeSocketNotifiers)
+    //     .value("WaitForMoreEvents", QEventLoop::ProcessEventsFlag::WaitForMoreEvents)
+    //     .export_values();
+
+    // py::class_<QEventLoop::ProcessEventsFlags>(m, "ProcessEventsFlags")
+    //     .def(py::init<>());
 
     py::class_<QObject>(m,"QObject")
         .def("blockSignals", &QObject::blockSignals)
