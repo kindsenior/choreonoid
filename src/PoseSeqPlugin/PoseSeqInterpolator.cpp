@@ -58,7 +58,8 @@ struct LinkSample
             c[i+3].yp = 0.0;
         }
         isTouching = info.isTouching();
-        isEndPoint = info.isStationaryPoint() || isTouching;
+        // isEndPoint = info.isStationaryPoint() || isTouching;
+        isEndPoint = info.isStationaryPoint();
         isDirty = true;
         isSlave = info.isSlave() && !info.isTouching();
         isAux = false;
@@ -91,7 +92,8 @@ struct LinkZSample
         c[0].y = info.p[2];
         c[0].yp = 0.0;
         isTouching = info.isTouching();
-        isEndPoint = info.isStationaryPoint() || isTouching;
+        // isEndPoint = info.isStationaryPoint() || isTouching;
+        isEndPoint = info.isStationaryPoint();
         isDirty = true;
     }
     void invalidateSegment(){
