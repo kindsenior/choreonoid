@@ -594,7 +594,100 @@ void usePredeterminedVelocities(typename SampleType::Seq& samples)
         ++s;
     }
 }
-    
+
+/**
+   pre-determined velocity version with a long sequence between two turning keyposes
+*/
+template <int dim, class SampleType>
+void usePredeterminedVelocitiesWithLongSequence(typename SampleType::Seq& samples)
+{
+    typename SampleType::Seq::iterator s = samples.begin();
+
+    typename SampleType::Seq::iterator prev = s;
+
+    typename SampleType::Seq::iterator sampleIters[dim];
+    std::vector<VectorXd> coeffsVecArray[dim];
+    for(int i=0; i < dim; ++i) sampleIters[i] = s;
+
+    while(s != samples.end()){
+
+        if(s->segmentType != INVALID){
+            typename SampleType::Seq::iterator next = s; ++next;
+            while(true){
+                if(next == samples.end()){
+                    next = s;
+                    break;
+                }
+                if(next->segmentType == INVALID){
+                    ++next;
+                } else {
+                    break;
+                }
+            }
+
+            double dt0 = s->x - prev->x;
+            double dt1 = next->x - s->x;
+
+            for(int i=3; i < dim; ++i){ // for rotation over 180[deg]
+                double& y = next->c[i].y;
+                if(fabs(s->c[i].y - y) > M_PI){
+                    double r = y - floor(y / (2.0 * M_PI)) * 2.0 * M_PI;
+                    y = floor(s->c[i].y / (2.0 * M_PI)) * 2.0 * M_PI + r;
+                }
+            }
+
+            for(int i=0; i < dim; ++i){
+                if(s->c[i].yp == 0.0){
+                    double dy0 = (s->c[i].y - prev->c[i].y);
+                    double dy1 = (next->c[i].y - s->c[i].y);
+                    if(fabs(dy0) < 1.0e-3 || fabs(dy1) < 1.0e-3 || dy0 * dy1 <= 0.0 || s->isEndPoint){
+                        // first (or final) node
+                        s->c[i].yp = 0.0;
+                        if(sampleIters[i] != s){
+                            // set matrix values
+                            int n = coeffsVecArray[i].size() + 1;
+                            MatrixXd A = MatrixXd::Zero(n, n);
+                            VectorXd b(n);
+                            A.block<1,2>(0,0) = coeffsVecArray[i][0].segment(1,2);
+                            b(0) = coeffsVecArray[i][0](3);
+                            for(int j=1; j < n-1; ++j){
+                                A.block<1,3>(j,j-1) = coeffsVecArray[i][j].segment(0,3);
+                                b(j) = coeffsVecArray[i][j](3);
+                            }
+                            A.block<1,2>(n-1,n-2) << dt0/6.0, dt0/3.0;
+                            b(n-1) = -dy0/dt0;
+
+                            VectorXd ddyVec = A.inverse()*b;
+
+                            typename SampleType::Seq::iterator nextIter = sampleIters[i];
+                            for(int j=1; j < n-1; ++j){
+                                typename SampleType::Seq::iterator curIter = nextIter++;
+                                double dt = nextIter->x - curIter->x;
+                                curIter->c[i].yp = (-ddyVec(j)/3.0 -ddyVec(j+1)/6.0)*dt + (nextIter->c[i].y - curIter->c[i].y)/dt;
+                                double next_vel  =  (ddyVec(j)/6.0 +ddyVec(j+1)/3.0)*dt + (nextIter->c[i].y - curIter->c[i].y)/dt;
+                            }
+                        }
+
+                        coeffsVecArray[i].clear();
+                        coeffsVecArray[i].shrink_to_fit();
+
+                        VectorXd coeffs(4);
+                        coeffs << 0,-dt1/3.0,-dt1/6.0, -dy1/dt1;
+                        coeffsVecArray[i].push_back(coeffs);
+                        sampleIters[i] = next;
+                    } else { // dy0 * dy1 > 0
+                        VectorXd coeffs(4);
+                        coeffs << dt0/6.0, (dt0+dt1)/3.0, dt1/6.0, dy1/dt1-dy0/dt0;
+                        coeffsVecArray[i].push_back(coeffs);
+                    }
+                }
+            }
+            if(!s->isEndPoint) s->isEndPoint = true;
+            prev = s;
+        }
+        ++s;
+    }
+}
 
 template <int dim, class SampleType, bool useJerkMinModel>
 void initializeInterpolation(typename SampleType::Seq& samples)
@@ -603,7 +696,8 @@ void initializeInterpolation(typename SampleType::Seq& samples)
         cout << "initializeInterpolation" << endl;
     }
 
-    usePredeterminedVelocities<dim, SampleType>(samples);
+    /* usePredeterminedVelocities<dim, SampleType>(samples); */
+    usePredeterminedVelocitiesWithLongSequence<dim, SampleType>(samples);
         
     typename SampleType::Seq::iterator s = samples.begin();
 
